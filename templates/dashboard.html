@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block c %}
+<div class="grid">
+<div class="card kpi"><b>{{ k.total }}</b><span>Requisições</span></div>
+<div class="card kpi"><b>{{ '%.0f'|format(k.req) }}</b><span>Qtd. requisitada</span></div>
+<div class="card kpi"><b>{{ '%.0f'|format(k.est) }}</b><span>Em estoque (TDC + Cerâmica + Sucesso)</span></div>
+<div class="card kpi"><b>{{ '%.0f'|format(k.comp) }}</b><span>Comprado</span></div>
+<div class="card kpi"><b>R$ {{ '{:,.2f}'.format(k.valor).replace(',','X').replace('.',',').replace('X','.') }}</b><span>Preço total</span></div></div>
+<div class="card"><h3>Requisições por status</h3>
+{% for s,n in por_status.items() %}<div class="bar"><span><span class="badge" style="--c:{{ cor_status(s) }}">{{ s }}</span></span><i style="--c:{{ cor_status(s) }};width:{{ n/mx*60 }}%;min-width:{{ 2 if n else 0 }}px"></i><span>{{ n }}</span></div>{% endfor %}</div>
+<div class="card"><h3>Maiores necessidades em aberto</h3><small style="color:var(--mut)">Requisitado − estoques − comprado (exclui concluídas e canceladas)</small>
+<div class="tw"><table><tr><th>RAV</th><th>ID</th><th>Descrição</th><th>Status</th><th>Necessidade</th></tr>
+{% for r in nec %}<tr><td>{% if r.numero_rav %}<a href="{{ url_for('lista', rav=r.numero_rav) }}">{{ r.numero_rav }}</a>{% else %}—{% endif %}</td><td>#{{ r.id }}</td><td>{{ r.descricao }}</td><td><span class="badge" style="--c:{{ cor_status(r.status) }}">{{ r.status }}</span></td><td>{{ r.necessidade }} {{ r.unidade_medida }}</td></tr>
+{% else %}<tr><td colspan="5">Sem pendências.</td></tr>{% endfor %}</table></div></div>
+<a class="btn" href="{{ url_for('relatorio') }}">Baixar relatório completo (CSV)</a>{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block c %}
+<form method="post" class="card"><h2>{{ 'Editar requisição #' ~ rid if rid else 'Nova requisição' }}</h2>
+<input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+<div class="grid">
+{% macro f(n,l,t='text',req=false) %}<div><label>{{ l }}</label><input name="{{ n }}" type="{{ t }}" {{ 'required' if req }} {% if t=='number' %}step="any" min="0"{% endif %} value="{{ r[n] if r and r[n] is not none else '' }}"></div>{% endmacro %}
+{{ f('numero_rav','Número da RAV','text',true) }}
+{{ f('quantidade_requisitada','Quantidade requisitada','number',true) }}
+{{ f('estoque_tdc','Estoque TDC','number') }}{{ f('estoque_ceramica','Estoque Cerâmica','number') }}
+{{ f('estoque_construtora_sucesso','Estoque Construtora Sucesso','number') }}{{ f('comprado','Comprado','number') }}
+<div><label>Área</label><select name="area" required><option value="" disabled {{ 'selected' if not (r and r.area) }}>Selecione…</option>{% for a in areas %}<option {{ 'selected' if r and r.area==a }}>{{ a }}</option>{% endfor %}</select></div>
+<div><label>Status</label><select name="status" required style="border-left:6px solid {{ cor_status(r.status) if r and r.status else 'var(--bd)' }}">{% for s in status %}<option {{ 'selected' if r and r.status==s }}>{{ s }}</option>{% endfor %}</select></div>
+{{ f('unidade_medida','Unidade de medida','text',true) }}{{ f('envio','Envio') }}{{ f('pedidos','Pedidos') }}
+{{ f('numero_documento','Número de documento') }}{{ f('valor','Valor unitário (R$)','number') }}{{ f('situacao','Situação') }}</div>
+<br><label>Descrição</label><textarea name="descricao" rows="3" maxlength="300" required>{{ r.descricao if r else '' }}</textarea>
+<br><label style="display:flex;align-items:center;gap:8px;color:var(--tx)"><input type="checkbox" id="obs_ativa" name="obs_ativa" value="1" style="width:auto" {{ 'checked' if r and r.observacoes }}> Adicionar observações</label>
+<label for="observacoes" style="margin-top:8px">Observações</label>
+<textarea id="observacoes" name="observacoes" rows="3" maxlength="500" placeholder="Bloqueado — marque “Adicionar observações” para escrever" {{ '' if r and r.observacoes else 'disabled' }}>{{ r.observacoes if r and r.observacoes else '' }}</textarea>
+<script src="{{ url_for('static', filename='form.js') }}"></script>
+<p style="color:var(--mut);font-size:13px">ID e data de cadastro são gerados automaticamente. Preço total = valor × quantidade requisitada.</p>
+<button>Salvar</button> <a class="btn sec" href="{{ url_for('lista') }}">Cancelar</a></form>{% endblock %}

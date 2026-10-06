@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block c %}
+<form method="post" class="card" style="max-width:340px;margin:60px auto">
+    <h2>Criar login</h2>    
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <label>Usuário</label>
+    <input name="usuario" required autofocus maxlength="30"><br><br>
+    <label>Senha (mín. 10 caracteres)</label>
+    <input name="senha" type="password" required minlength="10"><br><br>
+    <label>Confirmar senha</label>
+    <input name="confirmar" type="password" required minlength="10"><br><br>
+    <button>Criar</button>
+    <a class="btn sec" href="{{ url_for('login') }}">Voltar</a>
+
+</form>{% endblock %}

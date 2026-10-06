@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block c %}
+
+<form class="card" method="get" style="display:flex;gap:10px;align-items:end;flex-wrap:wrap">
+
+<div><label>Pesquisar por Nº da RAV</label><input name="rav" value="{{ q }}" maxlength="30" autofocus></div>
+
+<button>Pesquisar</button>
+
+<a class="btn sec" href="{{ url_for('lista') }}">Limpar</a>
+
+<a class="btn" href="{{ url_for('relatorio', rav=q) if q else url_for('relatorio') }}">Baixar relatório{{ ' RAV ' ~ q if q }}</a>
+</form>
+
+<div class="card tw">
+    
+<table><tr><th>RAV</th><th>ID</th><th>Área</th><th>Descrição</th><th>Un.</th><th>Qtd. req.</th><th>TDC</th><th>Cerâmica</th><th>Sucesso</th><th>Comprado</th><th>Status</th><th>Envio</th><th>Pedidos</th><th>Nº doc.</th><th>Valor</th><th>Total</th><th>Situação</th><th>Observações</th><th>Cadastro</th><th></th><th></th></tr>
+{% for r in rows %}<tr><td><b>{{ r.numero_rav or '—' }}</b></td><td>#{{ r.id }}</td><td>{{ r.area or '—' }}</td><td>{{ r.descricao }}</td><td>{{ r.unidade_medida }}</td><td>{{ r.quantidade_requisitada }}</td><td>{{ r.estoque_tdc }}</td><td>{{ r.estoque_ceramica }}</td><td>{{ r.estoque_construtora_sucesso }}</td><td>{{ r.comprado }}</td><td>
+<span class="badge" style="--c:{{ cor_status(r.status) }}">{{ r.status }}</span></td><td>{{ r.envio }}</td><td>{{ r.pedidos }}</td><td>{{ r.numero_documento }}</td><td>{{ '%.2f'|format(r.valor) }}</td><td>{{ '%.2f'|format(r.preco_total) }}</td><td>{{ r.situacao }}</td><td style="white-space:normal;min-width:180px">{{ r.observacoes or '' }}</td><td>{{ r.data_cadastro }}</td><td><a href="{{ url_for('formulario', rid=r.id) }}">Editar</a></td><td>
+<form method="post" action="{{ url_for('excluir', rid=r.id) }}" data-confirm="Excluir a requisição #{{ r.id }} (RAV {{ r.numero_rav or '—' }})? Esta ação não pode ser desfeita." style="margin:0">
+<input type="hidden" name="_csrf" value="{{ csrf_token() }}"><button class="btn-del">Excluir</button></form></td></tr>
+{% else %}<tr><td colspan="21">Nenhuma requisição encontrada.</td></tr>{% endfor %}</table></div>{% endblock %}
